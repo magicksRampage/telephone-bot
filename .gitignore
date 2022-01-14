@@ -1,0 +1,17 @@
+token
+__pycache__
+twitch_client_id
+msgqueue
+vcs.xml
+cfg_exporter.py
+.idea
+.idea/workspace.xml
+.vscode
+.vs
+*.lnk
+*.g5r~
+.pytest_cache
+/.coverage
+/htmlcov/
+/junit/
+/coverage.xml
