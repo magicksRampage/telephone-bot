@@ -73,6 +73,8 @@ def execute_sql_query(sql_query = None, sql_replacements = None):
 		cursor.execute(sql_query, sql_replacements)
 		if sql_query.lower().startswith("select"):
 			data = cursor.fetchall()
+		elif sql_query.lower().startswith("replace") or sql_query.lower().startswith("insert"):
+			data = cursor.lastrowid
 		conn.commit()
 	finally:
 		# Clean up the database handles.

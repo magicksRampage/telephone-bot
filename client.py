@@ -5,15 +5,19 @@ import time
 import telephone.config.core as tpcfg
 import telephone.cmd.hello as tphello
 import telephone.utils.core as tputils
+import telephone.backend.wordle as beword
 from telephone.model.cmd import TpCmd
 
 cmd_map = {
 	tpcfg.cmd_hello: tphello.hello
 }
 
-intents = discord.Intents.all()
+beword.init_valid_wordles()
+beword.init_valid_guesses()
 
-client = discord.client(intents=intents)
+intents = discord.Intents.default()
+
+client = discord.Client(intents=intents)
 
 @client.event
 async def on_message(message: discord.Message):
@@ -29,7 +33,7 @@ async def on_message(message: discord.Message):
 			tokens=message.content.split(" "),
 			client=client,
 			mentions=message.mentions,
-			guild=message.guild()
+			guild=message.guild
 		)
 
 		cmd_fun = cmd_map.get(cmd_obj.cmd)
