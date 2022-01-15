@@ -63,9 +63,11 @@ def databaseClose(conn_info):
 """
 	Execute a given sql_query. (the purpose of this function is to minimize repeated code and keep functions readable)
 """
-def execute_sql_query(sql_query = None, sql_replacements = None):
+def execute_sql_query(sql_query: str = None, sql_replacements: tuple = None):
 	data = None
 
+	cursor = None
+	conn_info = None
 	try:
 		conn_info = databaseConnect()
 		conn = conn_info.get('conn')
@@ -77,9 +79,11 @@ def execute_sql_query(sql_query = None, sql_replacements = None):
 			data = cursor.lastrowid
 		conn.commit()
 	finally:
-		# Clean up the database handles.
-		cursor.close()
-		databaseClose(conn_info)
+		if cursor is not None:
+			# Clean up the database handles.
+			cursor.close()
+		if conn_info is not None:
+			databaseClose(conn_info)
 
 	return data
 
@@ -117,12 +121,11 @@ def databaseclass(table: str):
 					))
 			), init_values)
 
-			self_as_dict = asdict(self)
 			if len(db_values) > 0:
 				for i in range(len(db_values[0])):
 					name = db_fields[i]
 					value = db_values[0][i]
-					self_as_dict[name] = value
+					setattr(self, name, value)
 			else:
 				self.persist()
 

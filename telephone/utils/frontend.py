@@ -1,5 +1,5 @@
 import discord
 
 
-async def respond(msg: str, author: discord.User):
-	await author.send(msg)
+async def respond(resp: str, msg: discord.Message):
+	await msg.reply(content=resp, mention_author=False)

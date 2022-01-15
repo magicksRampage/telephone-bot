@@ -4,12 +4,15 @@ import discord
 import time
 import telephone.config.core as tpcfg
 import telephone.cmd.hello as tphello
+import telephone.cmd.wordle as tpwordle
 import telephone.utils.core as tputils
 import telephone.backend.wordle as beword
 from telephone.model.cmd import TpCmd
 
 cmd_map = {
-	tpcfg.cmd_hello: tphello.hello
+	tpcfg.cmd_hello: tphello.hello,
+	tpcfg.cmd_wordle: tpwordle.wordle,
+	tpcfg.cmd_wordleguess: tpwordle.guess
 }
 
 beword.init_valid_wordles()
