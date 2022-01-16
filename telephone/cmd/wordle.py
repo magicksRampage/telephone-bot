@@ -68,22 +68,25 @@ async def guess(cmd: TpCmd):
 	return await feutils.respond(resp, cmd.message)
 
 
-
-
-
-
 def gen_diff_for_wordle_guess(word: str, guess: str):
-	diff = []
+	diff = list(map(lambda _: 0, guess))
+	word_without_guess = str(word)
+
 	for i_guess in range(len(guess)):
 		letter_guess = guess[i_guess]
 		if letter_guess == word[i_guess]:
-			diff.append(2)
-		elif word.find(letter_guess) > -1:
-			diff.append(1)
-		else:
-			diff.append(0)
+			word_without_guess = word_without_guess[:i_guess]
+			if len(word) > i_guess + 1:
+				word_without_guess += word[i_guess+1:]
+			diff[i_guess] = 2
+
+	for i_guess in filter(lambda i: diff[i] != 2, range(len(guess))):
+		letter_guess = guess[i_guess]
+		if word_without_guess.find(letter_guess) > -1:
+			diff[i_guess] = 1
 
 	return diff
+
 
 def diff_to_string(diff: list[int]):
 	return "".join(map(lambda d: cfgword.wordle_diff_to_emoji.get(d), diff))

@@ -93,8 +93,8 @@ def databaseclass(table: str):
 	def databaseclass_inner(cls):
 		old_init = cls.__init__
 		class_fields: tuple[Field, ...] = fields(cls)
-		init_fields = []
-		db_fields = []
+		init_fields: list[str] = []
+		db_fields: list[str] = []
 		for f in class_fields:
 			if f.init:
 				init_fields.append(f.name)
@@ -134,11 +134,16 @@ def databaseclass(table: str):
 		def persist(self):
 
 			self_as_dict = asdict(self)
-			execute_sql_query("REPLACE INTO {table} ({fields}) VALUES ({values})".format(
+			sql_args = []
+			sql_args.extend(map(lambda cf: self_as_dict.get(cf.name), class_fields))
+			sql_args.extend(map(lambda dbf: self_as_dict.get(dbf), db_fields))
+			execute_sql_query(("INSERT INTO {table} ({fields}) VALUES ({values}) ON DUPLICATE KEY " \
+							  + "UPDATE {field_map}").format(
 				table=table,
 				fields=", ".join(map(lambda cf: cf.name, class_fields)),
-				values=", ".join(map(lambda cf: "%s", class_fields))
-			), map(lambda cf: self_as_dict.get(cf.name), class_fields))
+				values=", ".join(map(lambda cf: "%s", class_fields)),
+				field_map=", ".join(map(lambda dbf: "{name}=%s".format(name=dbf), db_fields))
+			), tuple(sql_args))
 
 		cls.persist = persist
 

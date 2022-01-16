@@ -65,7 +65,7 @@ def init_word_list(f_name, table):
 
 def get_wordle_for_user(id_user: int):
 	data = becore.execute_sql_query(
-		"SELECT id_wordle FROM wordles WHERE id_wordle NOT IN (SELECT id_wordle FROM wordle_guess_history WHERE id_guesser = %s)",
+		"SELECT id_wordle FROM wordles WHERE id_wordle NOT IN (SELECT id_wordle FROM wordle_guess_history WHERE id_guesser = %s) AND solved = 0",
 		(id_user,)
 	)
 
@@ -94,7 +94,7 @@ def get_last_guess(id_wordle: int):
 	if len(data) > 0:
 		guess_value = data[0][0]
 		guess_no = data[0][1]
-		return TpWordleGuess(guess_value, guess_no)
+		return TpWordleGuess(id_wordle=id_wordle, guess_no=guess_no)
 	else:
 		return None
 
