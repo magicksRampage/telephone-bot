@@ -15,3 +15,4 @@ cfg_exporter.py
 /htmlcov/
 /junit/
 /coverage.xml
+run.sh
